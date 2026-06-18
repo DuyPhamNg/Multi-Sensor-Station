@@ -31,20 +31,17 @@ This project implements a modular embedded station that acquires data from multi
 Developed in **C/C++**, structured for STM32 portability from the start.
 
 ```
-project/
-├── BSP/              # Hardware abstraction layer
-│   ├── bsp_adc.c     # ADC — water level, joystick
-│   ├── bsp_pwm.c     # PWM — servo motor
-│   └── bsp_gpio.c    # GPIO — buzzer, triggers
-├── Drivers/          # Sensor drivers (portable, no Arduino-specific lib)
-│   ├── ds18b20.c / ds18b20.h     # 1-Wire temperature
-│   ├── water_level.c             # Analog level acquisition
-│   ├── joystick.c                # Dual-axis ADC input
-│   └── lcd_i2c.c / lcd_i2c.h    # I2C LCD display
-└── App/              # Application logic
-    ├── display_manager.c         # LCD refresh logic
-    ├── alert_manager.c           # Threshold detection + buzzer
-    └── servo_control.c           # Joystick → PWM mapping
+Core/
+├── App/
+│   ├── app.c        # FreeRTOS tasks — temp, water, joystick, display, alert
+│   └── app.h        # Task handles, queues, mutex, thresholds
+├── Drivers/
+│   ├── ds18b20.c / ds18b20.h    # 1-Wire temperature (bit-bang, no lib)
+│   ├── sensors.c / sensors.h    # Water level + joystick (ADC)
+│   ├── servo.c / servo.h        # Servo motor PWM (TIM3)
+│   └── lcd_i2c.c / lcd_i2c.h   # LCD 16x2 I2C (PCF8574, 4-bit mode)
+├── main.c           # Entry point — peripheral init, FreeRTOS start
+└── main.h           # Pin definitions, HAL handles
 ```
 
 ### Key implementation details
